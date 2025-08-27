@@ -1,0 +1,5 @@
+{
+  "name": "CampTrades",
+  "description": "A web application for college students to buy and sell items using a virtual coin-based trading system. The coin value fluctuates based on market dynamics like supply and demand, creating a campus-based mini-economy.",
+  "requestFramePermissions": []
+}
