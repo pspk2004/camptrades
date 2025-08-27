@@ -21,6 +21,15 @@ export const MOCK_USERS_DB: User[] = [
       avatar: 'https://picsum.photos/seed/jane/100/100',
       walletBalance: 2500,
       password: 'password123',
+    },
+    {
+      id: 'testuser01',
+      name: 'Test User',
+      email: 'test@university.edu',
+      collegeId: 'T1234567',
+      avatar: 'https://picsum.photos/seed/test/100/100',
+      walletBalance: 2000,
+      password: 'test',
     }
 ];
 
