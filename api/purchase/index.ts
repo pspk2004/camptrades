@@ -23,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
         await client.sql`BEGIN`;
 
-        // 1. Get item and seller details
+        // 1. Get item and seller details, and lock the rows
         const itemResult = await client.sql`
             SELECT i.id, i.title, i.price, i.seller_id, i.seller_name, u.wallet_balance as seller_balance
             FROM items i
@@ -37,6 +37,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(404).json({ error: 'Item not found.' });
         }
         const item = itemResult.rows[0];
+        
+        // Check if item was already sold in another transaction
+        const soldCheck = await client.sql`SELECT id FROM transactions WHERE item_id = ${itemId} AND type = 'buy'`;
+        if (soldCheck.rows.length > 0) {
+            await client.sql`ROLLBACK`;
+            return res.status(409).json({ error: 'This item has already been sold.' });
+        }
+
 
         if (item.seller_id === buyer.id) {
             await client.sql`ROLLBACK`;

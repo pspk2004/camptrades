@@ -55,6 +55,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout, onUserUpdate })
     };
 
     const handleBuyItemClick = (item: Item) => {
+        if (item.sellerId === user.id) {
+            alert("You cannot buy your own item.");
+            return;
+        }
         if (user.walletBalance >= item.price) {
             setItemToPurchase(item);
             setPurchaseModalOpen(true);
@@ -79,6 +83,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout, onUserUpdate })
         } catch (error) {
             console.error("Purchase failed:", error);
             alert(`Purchase failed: ${(error as Error).message}`);
+            setPurchaseModalOpen(false);
         }
     };
 
@@ -108,14 +113,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout, onUserUpdate })
         if (isLoading) {
             return (
                 <div className="flex justify-center items-center h-64">
-                    <p className="text-gray-600 dark:text-gray-300">Loading your CampTrades experience...</p>
+                    <p className="text-gray-600 dark:text-gray-300 animate-pulse">Loading your CampTrades experience...</p>
                 </div>
             );
         }
         switch (activePage) {
             case 'marketplace':
                 return <Marketplace 
-                            items={items} 
+                            items={items.filter(item => item.sellerId !== user.id)} 
                             onBuyItem={handleBuyItemClick} 
                             onAddItemClick={() => setAddItemModalOpen(true)}
                             onAiFinderClick={() => setAiFinderModalOpen(true)}
@@ -126,7 +131,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout, onUserUpdate })
                 return <MyListings user={user} items={items} onRemoveItem={handleRemoveItem} />;
             case 'dashboard':
             default:
-                return <Dashboard user={user} items={items} onBuyItem={handleBuyItemClick} onNavigate={handleNavigate} />;
+                return <Dashboard user={user} items={items.filter(item => item.sellerId !== user.id)} onBuyItem={handleBuyItemClick} onNavigate={handleNavigate} />;
         }
     };
 
@@ -150,7 +155,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout, onUserUpdate })
             <AIDealFinderModal
                 isOpen={isAiFinderModalOpen}
                 onClose={() => setAiFinderModalOpen(false)}
-                items={items}
+                items={items.filter(item => item.sellerId !== user.id)}
                 onBuyItem={handleBuyItemClick}
             />
         </div>

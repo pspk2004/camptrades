@@ -14,7 +14,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ user, items, onBuyItem, onNavigate }) => {
-    const recentItems = items.slice(0, 3);
+    const recentItems = items.filter(item => item.sellerId !== user.id).slice(0, 3);
 
     return (
         <div className="space-y-8">

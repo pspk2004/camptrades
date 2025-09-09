@@ -4,6 +4,7 @@ import type { User } from '../src/types';
 
 // This function needs to handle the snake_case to camelCase conversion from the DB
 const mapDbUserToUserObject = (dbUser: any): User => {
+    if (!dbUser) return null;
     return {
         id: dbUser.id,
         name: dbUser.name,
@@ -29,6 +30,8 @@ export const getUserBySessionToken = async (req: VercelRequest): Promise<User | 
         `;
 
         if (sessionRes.rows.length === 0) {
+            // Clean up expired token
+            await client.sql`DELETE FROM sessions WHERE token = ${token}`;
             return null;
         }
 

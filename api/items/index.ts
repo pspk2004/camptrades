@@ -32,6 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 async function getItems(req: VercelRequest, res: VercelResponse) {
     const client = await db.connect();
     try {
+        // A simple way to check for sold items is to see if a 'buy' transaction exists for them.
         const result = await client.sql`
             SELECT id, title, description, image, price, category, condition, seller_id, seller_name, listed_date
             FROM items

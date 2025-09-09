@@ -11,8 +11,8 @@ const mapDbTransactionToTransactionObject = (dbTx: any) => {
         itemName: dbTx.item_name,
         amount: dbTx.amount,
         date: dbTx.date,
-        from: dbTx.from,
-        to: dbTx.to,
+        from: dbTx.from_user_name,
+        to: dbTx.to_user_name,
     };
 }
 
@@ -30,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const client = await db.connect();
     try {
         const result = await client.sql`
-            SELECT id, type, item_id, item_name, amount, date, from_user_name AS "from", to_user_name AS "to"
+            SELECT id, type, item_id, item_name, amount, date, from_user_name, to_user_name
             FROM transactions
             WHERE user_id = ${user.id}
             ORDER BY date DESC

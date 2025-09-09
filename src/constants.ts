@@ -1,4 +1,3 @@
-
 import type { Achievement } from './types';
 import { CoinIcon } from './components/icons/CoinIcon';
 import React from 'react';

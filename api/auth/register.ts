@@ -24,7 +24,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // IMPORTANT: In a real app, hash the password before storing it.
         const hashedPassword = password; // Storing plaintext for now.
         const newUserId = `user${Date.now()}`;
-        const avatar = `https://picsum.photos/seed/${name}/100/100`;
+        const avatar = `https://picsum.photos/seed/${name.replace(/\s/g, '')}/100/100`;
         const initialBalance = 500; // Sign-up bonus
 
         const newUserResult = await client.sql`
