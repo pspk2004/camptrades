@@ -1,74 +1,93 @@
+
+import { MOCK_USERS_DB } from '../constants';
 import type { User } from '../types';
 
-const SESSION_TOKEN_KEY = 'camp_trades_session_token';
+const USERS_DB_KEY = 'camp_trades_users';
+const SESSION_KEY = 'camp_trades_session';
 
-const getAuthHeaders = () => {
-    const token = localStorage.getItem(SESSION_TOKEN_KEY);
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
+// Initialize user database in localStorage if it doesn't exist
+const getUsers = (): User[] => {
+  const users = localStorage.getItem(USERS_DB_KEY);
+  if (users) {
+    return JSON.parse(users);
+  } else {
+    localStorage.setItem(USERS_DB_KEY, JSON.stringify(MOCK_USERS_DB));
+    return MOCK_USERS_DB;
+  }
 };
 
 export const authService = {
-    register: async (name: string, email: string, password: string, collegeId: string): Promise<User> => {
-        const response = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password, collegeId }),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error || 'Registration failed.');
+  register: (name: string, email: string, password: string, collegeId: string): Promise<User> => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const users = getUsers();
+        if (users.find(user => user.email === email)) {
+          reject(new Error('User with this email already exists.'));
+          return;
         }
-        localStorage.setItem(SESSION_TOKEN_KEY, data.token);
-        return data.user;
-    },
 
-    login: async (email: string, password: string): Promise<User> => {
-        const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error || 'Invalid email or password.');
-        }
-        localStorage.setItem(SESSION_TOKEN_KEY, data.token);
-        return data.user;
-    },
+        const newUser: User = {
+          id: `user${Date.now()}`,
+          name,
+          email,
+          password, // In a real app, this should be hashed
+          collegeId,
+          avatar: `https://picsum.photos/seed/${name.replace(/\s/g, '')}/100/100`,
+          walletBalance: 500, // Sign-up bonus
+        };
 
-    logout: async (): Promise<void> => {
-        const token = localStorage.getItem(SESSION_TOKEN_KEY);
-        if (token) {
-            await fetch('/api/auth/logout', {
-                method: 'POST',
-                headers: getAuthHeaders(),
-            });
-            localStorage.removeItem(SESSION_TOKEN_KEY);
-        }
-        return Promise.resolve();
-    },
+        users.push(newUser);
+        localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
+        localStorage.setItem(SESSION_KEY, newUser.id);
 
-    getCurrentUser: async (): Promise<User | null> => {
-        const token = localStorage.getItem(SESSION_TOKEN_KEY);
-        if (!token) {
-            return null;
+        resolve(newUser);
+      }, 500);
+    });
+  },
+
+  login: (email: string, password: string): Promise<User> => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const users = getUsers();
+        const user = users.find(u => u.email === email);
+        
+        // Add test user credentials
+        if (email === 'test@university.edu' && password === 'test') {
+             const testUser = users.find(u => u.email === 'test@university.edu');
+             if (testUser) {
+                 localStorage.setItem(SESSION_KEY, testUser.id);
+                 resolve(testUser);
+                 return;
+             }
         }
-        try {
-            const response = await fetch('/api/auth/session', {
-                headers: getAuthHeaders(),
-            });
-            if (response.status === 401) { // Token is invalid or expired
-                localStorage.removeItem(SESSION_TOKEN_KEY);
-                return null;
-            }
-            if (!response.ok) {
-                return null;
-            }
-            const data = await response.json();
-            return data.user;
-        } catch (error) {
-            console.error("Session check failed:", error);
-            return null;
+
+        if (user && user.password === password) {
+          localStorage.setItem(SESSION_KEY, user.id);
+          resolve(user);
+        } else {
+          reject(new Error('Invalid email or password.'));
         }
-    },
+      }, 500);
+    });
+  },
+
+  logout: (): Promise<void> => {
+    return new Promise(resolve => {
+      localStorage.removeItem(SESSION_KEY);
+      resolve();
+    });
+  },
+
+  getCurrentUser: (): Promise<User | null> => {
+    return new Promise(resolve => {
+      const userId = localStorage.getItem(SESSION_KEY);
+      if (userId) {
+        const users = getUsers();
+        const user = users.find(u => u.id === userId);
+        resolve(user || null);
+      } else {
+        resolve(null);
+      }
+    });
+  },
 };

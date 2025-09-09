@@ -1,7 +1,122 @@
-import React from 'react';
 
-// Note: MOCK data has been moved to a Vercel Postgres database.
-// This data is now seeded into the database via a SQL script.
+
+import type { User, Item, Transaction } from './types';
+import { ItemCategory, ItemCondition, TransactionType } from './types';
+
+// Note: In a real app, passwords would be securely hashed on a server.
+export const MOCK_USERS_DB: User[] = [
+    {
+      id: 'user123',
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      collegeId: 'A1234567',
+      avatar: 'https://picsum.photos/seed/alex/100/100',
+      walletBalance: 1500,
+      password: 'password123',
+    },
+    {
+      id: 'user456',
+      name: 'Jane Doe',
+      email: 'jane.d@university.edu',
+      collegeId: 'B7654321',
+      avatar: 'https://picsum.photos/seed/jane/100/100',
+      walletBalance: 2500,
+      password: 'password123',
+    },
+    {
+      id: 'testuser01',
+      name: 'Test User',
+      email: 'test@university.edu',
+      collegeId: 'T1234567',
+      avatar: 'https://picsum.photos/seed/test/100/100',
+      walletBalance: 2000,
+      password: 'test',
+    }
+];
+
+
+export const MOCK_ITEMS: Item[] = [
+  {
+    id: 'item001',
+    title: 'Advanced Calculus Textbook',
+    description: 'Barely used textbook for MATH-301. No highlights or marks. Latest edition.',
+    image: 'https://picsum.photos/seed/book1/400/300',
+    price: 120,
+    category: ItemCategory.BOOKS,
+    condition: ItemCondition.LIKE_NEW,
+    sellerId: 'user456',
+    sellerName: 'Jane Doe',
+    listedDate: '2023-10-26T10:00:00Z',
+  },
+  {
+    id: 'item002',
+    title: 'Noise-Cancelling Headphones',
+    description: 'Sony WH-1000XM4 in great condition. Comes with case and all accessories.',
+    image: 'https://picsum.photos/seed/headphones/400/300',
+    price: 450,
+    category: ItemCategory.ELECTRONICS,
+    condition: ItemCondition.GOOD,
+    sellerId: 'user456',
+    sellerName: 'Jane Doe',
+    listedDate: '2023-10-25T14:30:00Z',
+  },
+  {
+    id: 'item003',
+    title: 'Mini Fridge for Dorm Room',
+    description: 'Compact mini fridge, perfect for a dorm room. Works perfectly, cleaned thoroughly.',
+    image: 'https://picsum.photos/seed/fridge/400/300',
+    price: 200,
+    category: ItemCategory.FURNITURE,
+    condition: ItemCondition.USED,
+    sellerId: 'user456',
+    sellerName: 'Jane Doe',
+    listedDate: '2023-10-24T09:00:00Z',
+  },
+  {
+    id: 'item004',
+    title: 'University Hoodie - Size M',
+    description: 'Official university hoodie. Worn a few times, no stains or damage.',
+    image: 'https://picsum.photos/seed/hoodie/400/300',
+    price: 75,
+    category: ItemCategory.CLOTHING,
+    condition: ItemCondition.GOOD,
+    sellerId: 'user123',
+    sellerName: 'Alex Johnson',
+    listedDate: '2023-10-26T11:00:00Z',
+  },
+   {
+    id: 'item005',
+    title: 'Portable Bluetooth Speaker',
+    description: 'JBL Flip 5, waterproof. Great sound quality. Minor scratches on the side.',
+    image: 'https://picsum.photos/seed/speaker/400/300',
+    price: 150,
+    category: ItemCategory.ELECTRONICS,
+    condition: ItemCondition.USED,
+    sellerId: 'user123',
+    sellerName: 'Alex Johnson',
+    listedDate: '2023-10-23T18:00:00Z',
+  },
+  {
+    id: 'item006',
+    title: 'Intro to Python Programming',
+    description: 'Required textbook for CS-101. Excellent for beginners. Includes online code access.',
+    image: 'https://picsum.photos/seed/pythonbook/400/300',
+    price: 90,
+    category: ItemCategory.BOOKS,
+    condition: ItemCondition.LIKE_NEW,
+    sellerId: 'user456',
+    sellerName: 'Jane Doe',
+    listedDate: '2023-10-25T16:00:00Z',
+  },
+];
+
+export const MOCK_TRANSACTIONS: Transaction[] = [
+    { id: 'txn001', type: TransactionType.SIGNUP, amount: 500, date: '2023-10-01T08:00:00Z', from: 'CampTrades', to: 'Alex Johnson' },
+    { id: 'txn002', type: TransactionType.SELL, itemId: 'itemS01', itemName: 'Old Graphic Calculator', amount: 50, date: '2023-10-15T12:45:00Z', from: 'Emily White', to: 'Alex Johnson' },
+    { id: 'txn003', type: TransactionType.BUY, itemId: 'itemB01', itemName: 'Desk Lamp', amount: -30, date: '2023-10-18T19:20:00Z', from: 'Alex Johnson', to: 'David Chen' },
+    { id: 'txn004', type: TransactionType.REWARD, amount: 100, date: '2023-10-22T00:00:00Z', from: 'CampTrades Weekly', to: 'Alex Johnson' },
+    { id: 'txn005', type: TransactionType.REFERRAL, amount: 75, date: '2023-10-24T11:10:00Z', from: 'Referral System', to: 'Alex Johnson' },
+];
 
 export const MOCK_COIN_HISTORY = [
     { date: 'Oct 1', value: 10.00 },
