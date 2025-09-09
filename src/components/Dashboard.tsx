@@ -1,5 +1,4 @@
 import React from 'react';
-// Fix: Import Page type for onNavigate prop.
 import type { User, Item, Page } from '../types';
 import CoinChart from './CoinChart';
 import ItemCard from './ItemCard';
@@ -9,11 +8,11 @@ interface DashboardProps {
     user: User;
     items: Item[];
     onBuyItem: (item: Item) => void;
-    // Fix: Use Page type for onNavigate prop for better type safety.
     onNavigate: (page: Page) => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ user, items, onBuyItem, onNavigate }) => {
+    // Show the 3 most recent items that don't belong to the current user
     const recentItems = items.filter(item => item.sellerId !== user.id).slice(0, 3);
 
     return (

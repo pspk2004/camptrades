@@ -1,9 +1,10 @@
 import { db } from '@vercel/postgres';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getUserBySessionToken } from '../_utils';
+import type { Transaction } from '../../src/types';
 
 // DB columns are snake_case, frontend type is camelCase
-const mapDbTransactionToTransactionObject = (dbTx: any) => {
+const mapDbTransactionToTransactionObject = (dbTx: any): Transaction => {
     return {
         id: dbTx.id,
         type: dbTx.type,

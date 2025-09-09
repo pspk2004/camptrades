@@ -2,8 +2,8 @@ import { db } from '@vercel/postgres';
 import type { VercelRequest } from '@vercel/node';
 import type { User } from '../src/types';
 
-// This function needs to handle the snake_case to camelCase conversion from the DB
-const mapDbUserToUserObject = (dbUser: any): User => {
+// This function handles the snake_case to camelCase conversion from the DB
+const mapDbUserToUserObject = (dbUser: any): User | null => {
     if (!dbUser) return null;
     return {
         id: dbUser.id,

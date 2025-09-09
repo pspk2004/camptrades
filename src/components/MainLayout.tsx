@@ -117,10 +117,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout, onUserUpdate })
                 </div>
             );
         }
+        
+        const marketplaceItems = items.filter(item => item.sellerId !== user.id);
+
         switch (activePage) {
             case 'marketplace':
                 return <Marketplace 
-                            items={items.filter(item => item.sellerId !== user.id)} 
+                            items={marketplaceItems} 
                             onBuyItem={handleBuyItemClick} 
                             onAddItemClick={() => setAddItemModalOpen(true)}
                             onAiFinderClick={() => setAiFinderModalOpen(true)}
@@ -131,7 +134,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout, onUserUpdate })
                 return <MyListings user={user} items={items} onRemoveItem={handleRemoveItem} />;
             case 'dashboard':
             default:
-                return <Dashboard user={user} items={items.filter(item => item.sellerId !== user.id)} onBuyItem={handleBuyItemClick} onNavigate={handleNavigate} />;
+                return <Dashboard user={user} items={marketplaceItems} onBuyItem={handleBuyItemClick} onNavigate={handleNavigate} />;
         }
     };
 
